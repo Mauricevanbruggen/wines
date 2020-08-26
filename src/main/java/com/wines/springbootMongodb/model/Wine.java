@@ -2,12 +2,17 @@ package com.wines.springbootMongodb.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document (collection = "Wines") //collection name in mongodb
 public class Wine {
 
-  private int id;
+  @Id
+  private String id;
   private String name;
   private int year;
+  private int price;
   private Winemaker wineMaker;
   private List<Review> reviews;
 
@@ -15,20 +20,20 @@ public class Wine {
     reviews = new ArrayList<>();
   }
 
-  public Wine(int id, String name, int year, Winemaker wineMaker,
+  public Wine(String name, int year, int price, Winemaker wineMaker,
       List<Review> reviews) {
-    this.id = id;
     this.name = name;
     this.year = year;
+    this.price = price;
     this.wineMaker = wineMaker;
     this.reviews = reviews;
   }
 
-  public int getId() {
+  public String getId() {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(String id) {
     this.id = id;
   }
 
@@ -42,6 +47,14 @@ public class Wine {
 
   public int getYear() {
     return year;
+  }
+
+  public int getPrice() {
+    return price;
+  }
+
+  public void setPrice(int price) {
+    this.price = price;
   }
 
   public Winemaker getWineMaker() {
@@ -58,7 +71,7 @@ public class Wine {
 
   @Override
   public String toString() {
-    return "id: " + id + ", namelkhads: " + name + ", year: " + year + "," +
+    return ", name: " + name + ", year: " + year + "," +
              '\n' + "winemaker: " + wineMaker.toString() + "," +
               '\n' + "reviews: " + reviews;
   }
@@ -67,8 +80,8 @@ public class Wine {
   public boolean equals(Object other) {
     if (other instanceof Wine) {
       Wine that = (Wine) other;
-      return id == that.id && name.equals(that.name) &&
-          year == that.year &&
+      return name.equals(that.name) &&
+          year == that.year && price == that.price &&
           wineMaker.equals(that.wineMaker) &&
           reviews.equals(that.reviews);
     }
