@@ -14,7 +14,7 @@ public class WineTest {
   @BeforeEach
   void beforeEach() {
 
-    wine1 = new Wine(1, "pol roger", 2012,
+    wine1 = new Wine("pol roger", 2012, 40,
         new Winemaker(
             "John",
             "Dutch",
@@ -25,7 +25,7 @@ public class WineTest {
         new Review("Claus", 7, true)
     ));
 
-    wine2 = new Wine(1, "pol roger", 2012,
+    wine2 = new Wine("pol roger", 2012, 40,
         new Winemaker(
             "John",
             "Dutch",
@@ -36,7 +36,7 @@ public class WineTest {
             new Review("Claus", 7, true)
         ));
 
-    wine3 = new Wine(2, "moet", 2019,
+    wine3 = new Wine("moet", 2019, 27,
         new Winemaker(
             "John",
             "Dutch",
