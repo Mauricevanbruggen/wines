@@ -64,6 +64,4 @@ public class DbSeeder implements CommandLineRunner {
     List<Wine> wines = Arrays.asList(polRoger, sancerre, gavi, ontanon);
      this.wineRepository.saveAll(wines);
   }
-
-
 }
