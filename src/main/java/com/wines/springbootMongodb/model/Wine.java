@@ -2,10 +2,11 @@ package com.wines.springbootMongodb.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document (collection = "Wines") //collection name in mongodb
+@Document (collection = "Wines")
 public class Wine {
 
   @Id
@@ -86,5 +87,10 @@ public class Wine {
           reviews.equals(that.reviews);
     }
     return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, name, year, price, wineMaker, reviews);
   }
 }

@@ -19,16 +19,20 @@ public class WineService {
   @Autowired
   WineRepository wineRepository;
   
-  public List<Wine> getAll() {
+  public List<Wine> getAllWines() {
     return wineRepository.findAll();
-  }
-
-  public Wine addWine(Wine wine) {
-    return wineRepository.insert(wine);
   }
 
   public Optional<Wine> findWineById(String id) {
     return wineRepository.findById(id);
+  }
+
+  public Optional<Wine> findWineByName(String wineName) {
+    return wineRepository.findByName(wineName);
+  }
+
+  public Wine addWine(Wine wine) {
+    return wineRepository.insert(wine);
   }
 
   public Wine updateWine(Wine wine) {
@@ -40,6 +44,7 @@ public class WineService {
   }
 
 
+  // this does not work properly
   public Map<String, Object> getAllWinesInPage(int pageNo, int pageSize, String sortBy) {
     Map<String, Object> response = new HashMap<>();
 
