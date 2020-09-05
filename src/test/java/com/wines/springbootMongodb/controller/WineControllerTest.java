@@ -1,15 +1,16 @@
 package com.wines.springbootMongodb.controller;
 
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wines.springbootMongodb.com.service.WineService;
 import com.wines.springbootMongodb.repository.WineRepository;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,9 +22,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import com.wines.springbootMongodb.model.Wine;
-import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = WineController.class, excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
@@ -31,6 +33,9 @@ public class WineControllerTest {
 
   @Autowired
   private MockMvc mockMvc;
+
+  @Autowired
+  private ObjectMapper objectMapper;
 
   @MockBean
   private WineRepository wineRepository;
@@ -43,20 +48,6 @@ public class WineControllerTest {
 
   private Wine wine1, wine2;
   private List<Wine> wineList;
-
-//  @BeforeEach
-//  public void before() {
-//    wine1.setId("1");
-//    wine1.setName("wine1");
-//
-//    wine2.setId("2");
-//    wine2.setName("wine2");
-//
-//    wineList = Arrays.asList(
-//        wine1,
-//        wine2
-//    );
-//  }
 
   @Test
   @DisplayName("getWines should return list of wines")
@@ -75,10 +66,32 @@ public class WineControllerTest {
     );
     given(wineService.getAllWines()).willReturn(wineList);
 
-    this.mockMvc.perform(get("/allwines/"))
+    mockMvc.perform(get("/allwines/"))
         .andExpect(status().isOk())
-        .andExpect( jsonPath("$.size()").value(wineList.size()));
+        .andExpect( jsonPath("$.size()").value(wineList.size()))
+        .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
+        .andDo(MockMvcResultHandlers.print());
   }
 
+  @Test
+  @DisplayName("getWineByName should return a wine")
+  public void getWineByNameShouldReturnWine() throws Exception {
+    Wine wine = new Wine();
+    wine.setPrice(10);
+    wine.setName("wine");
+
+    wineList = Arrays.asList(
+        wine1
+    );
+    //https://medium.com/backend-habit/integrate-junit-and-mockito-unit-testing-for-controller-layer-91bb4099c2a5
+    //https://github.com/teten777/spring-boot-rest-api/blob/master/src/test/java/id/test/springboottesting/controller/UserControllerTest.java
+    given(wineService.findWineByName("wine")).willReturn(Optional.of(wine));
+
+    mockMvc.perform(get("/allwines/wine", wine.getName()))
+        .andExpect(status().isOk())
+        .andDo(MockMvcResultHandlers.print());
+     //   .andExpect(jsonPath("$.price").value(wine.getPrice()))
+     //   .andExpect(jsonPath("$.name").value(wine.getName()));
+  }
 
 }
