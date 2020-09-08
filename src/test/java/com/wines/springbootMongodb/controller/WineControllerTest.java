@@ -2,6 +2,8 @@ package com.wines.springbootMongodb.controller;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -11,7 +13,6 @@ import com.wines.springbootMongodb.repository.WineRepository;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +24,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import com.wines.springbootMongodb.model.Wine;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 
@@ -68,9 +68,9 @@ public class WineControllerTest {
 
     mockMvc.perform(get("/allwines/"))
         .andExpect(status().isOk())
-        .andExpect( jsonPath("$.size()").value(wineList.size()))
+        .andExpect(jsonPath("$.size()").value(wineList.size()))
         .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
-        .andDo(MockMvcResultHandlers.print());
+        .andDo(print());
   }
 
   @Test
@@ -81,17 +81,37 @@ public class WineControllerTest {
     wine.setName("wine");
 
     wineList = Arrays.asList(
-        wine1
+        wine
     );
-    //https://medium.com/backend-habit/integrate-junit-and-mockito-unit-testing-for-controller-layer-91bb4099c2a5
-    //https://github.com/teten777/spring-boot-rest-api/blob/master/src/test/java/id/test/springboottesting/controller/UserControllerTest.java
-    given(wineService.findWineByName("wine")).willReturn(Optional.of(wine));
 
-    mockMvc.perform(get("/allwines/wine", wine.getName()))
+    given(wineService.getAllWines()).willReturn(wineList);
+    given(wineService.findWineByName("wine")).willReturn(Optional.of(new Wine()));
+
+    mockMvc.perform(get("/allwines/{wine}", wine.getName()))
         .andExpect(status().isOk())
-        .andDo(MockMvcResultHandlers.print());
-     //   .andExpect(jsonPath("$.price").value(wine.getPrice()))
-     //   .andExpect(jsonPath("$.name").value(wine.getName()));
+        .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
+        .andDo(print());
+    //   .andExpect(jsonPath("$.price").value(wine.getPrice()))
+    //   .andExpect(jsonPath("$.name").value(wine.getName()));
   }
 
+  @Test // test does still fail
+  @DisplayName("create wine should return a wine")
+  public void addWine() throws Exception {
+    Wine wine = new Wine();
+    wine.setPrice(10);
+    wine.setName("wine");
+
+    wineList = Arrays.asList(
+        wine
+    );
+
+    given(wineService.addWine(wine)).willReturn(new Wine());
+    mockMvc.perform(post("/allwines/"))
+//        .andExpect(status().isOk())
+//        .andExpect(jsonPath("$.name").value(wine.getName()))
+//        .andExpect(jsonPath("$.price").value(wine.getPrice()))
+        .andDo(print());
+  }
 }
+
