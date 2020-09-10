@@ -3,6 +3,7 @@ package com.wines.springbootMongodb.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.OptionalDouble;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -11,11 +12,12 @@ public class Wine {
 
   @Id
   private String id;
-  private String name;
+  private String wineName;
   private int year;
   private int price;
   private Winemaker wineMaker;
   private List<Review> reviews;
+  public int avReview;
 
   public Wine() {
     reviews = new ArrayList<>();
@@ -23,11 +25,12 @@ public class Wine {
 
   public Wine(String name, int year, int price, Winemaker wineMaker,
       List<Review> reviews) {
-    this.name = name;
+    this.wineName = name;
     this.year = year;
     this.price = price;
     this.wineMaker = wineMaker;
     this.reviews = reviews;
+    this.avReview = createAverageReview();
   }
 
   public String getId() {
@@ -39,11 +42,11 @@ public class Wine {
   }
 
   public String getName() {
-    return name;
+    return wineName;
   }
 
   public void setName(String name) {
-    this.name = name;
+    this.wineName = name;
   }
 
   public int getYear() {
@@ -70,9 +73,21 @@ public class Wine {
     return reviews;
   }
 
+  public int getAvReview() {
+    return avReview;
+  }
+
+  public int createAverageReview() {
+    OptionalDouble averageReview = reviews.stream()
+        .mapToInt(x -> x.getRating())
+        .average();
+
+    return averageReview.isPresent() ? ((int) averageReview.getAsDouble()) : 0;
+  }
+
   @Override
   public String toString() {
-    return ", name: " + name + ", year: " + year + "," +
+    return ", Wine name: " + wineName + ", year: " + year + "," +
              '\n' + "winemaker: " + wineMaker.toString() + "," +
               '\n' + "reviews: " + reviews;
   }
@@ -81,7 +96,7 @@ public class Wine {
   public boolean equals(Object other) {
     if (other instanceof Wine) {
       Wine that = (Wine) other;
-      return name.equals(that.name) &&
+      return wineName.equals(that.wineName) &&
           year == that.year && price == that.price &&
           wineMaker.equals(that.wineMaker) &&
           reviews.equals(that.reviews);
@@ -91,6 +106,6 @@ public class Wine {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, year, price, wineMaker, reviews);
+    return Objects.hash(id, wineName, year, price, wineMaker, reviews);
   }
 }

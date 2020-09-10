@@ -1,12 +1,24 @@
 package com.wines.springbootMongodb.repository;
 
 import com.wines.springbootMongodb.model.Wine;
-import java.util.Optional;
+import java.util.List;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface WineRepository extends MongoRepository<Wine,String> {
 
-   Optional<Wine> findByName(String wineName);
+  List<Wine> findByWineNameStartingWith(String wineMakerName);
+
+  List<Wine> findByWineMakerName(String winemakerName);
+
+  @Query(value ="{'price': {$lt : ?0}}}")
+  List<Wine> winesLessThan(int price);
+
+  List<Wine> findByOrderByAvReviewDesc();
+
+  List<Wine> findByOrderByAvReviewAsc();
 }

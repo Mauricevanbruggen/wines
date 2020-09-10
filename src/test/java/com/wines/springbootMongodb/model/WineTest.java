@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class WineTest {
-  private Wine wine1, wine2, wine3;
+  private Wine wine1, wine2, wine3, wine4;
 
   @BeforeEach
   void beforeEach() {
@@ -21,7 +21,7 @@ public class WineTest {
             23),
     Arrays.asList(
         new Review("John", 8, true),
-        new Review("Theo", 5, false),
+        new Review("Theo", 6, false),
         new Review("Claus", 7, true)
     ));
 
@@ -32,7 +32,7 @@ public class WineTest {
             23),
         Arrays.asList(
             new Review("John", 8, true),
-            new Review("Theo", 5, false),
+            new Review("Theo", 6, false),
             new Review("Claus", 7, true)
         ));
 
@@ -45,6 +45,28 @@ public class WineTest {
             new Review("John", 8, true)
 
         ));
+
+    wine4 = new Wine("apostelhoeve", 2020, 5,
+        new Winemaker(
+            "Henk",
+            "Dutch",
+            45),
+            Arrays.asList(
+                new Review()
+        ));
+  }
+
+  @Test
+  void testWineAttributes() {
+    assertEquals("pol roger", wine1.getName());
+    assertEquals(23, wine1.getWineMaker().getAge());
+    assertEquals(7, wine1.getAvReview());
+  }
+
+  @Test
+  void calculateAverageReview() {
+    assertEquals(6, wine2.createAverageReview());
+    assertEquals(0, wine4.createAverageReview());
   }
 
   @Test

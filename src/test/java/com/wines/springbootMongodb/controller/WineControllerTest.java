@@ -1,5 +1,6 @@
 package com.wines.springbootMongodb.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -69,8 +70,9 @@ public class WineControllerTest {
     mockMvc.perform(get("/allwines/"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.size()").value(wineList.size()))
-        .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
-        .andDo(print());
+        .andExpect(MockMvcResultMatchers.content().contentType("application/json"));
+
+    assertEquals(wine1.getId(), wineList.get(0).getId());
   }
 
   @Test
@@ -79,20 +81,24 @@ public class WineControllerTest {
     Wine wine = new Wine();
     wine.setPrice(10);
     wine.setName("wine");
+    String winename = "wine";
 
     wineList = Arrays.asList(
         wine
     );
 
-    given(wineService.getAllWines()).willReturn(wineList);
-    given(wineService.findWineByName("wine")).willReturn(Optional.of(new Wine()));
+    given(wineService.getAllByWineName("wine")).willReturn(wineList);
 
-    mockMvc.perform(get("/allwines/{wine}", wine.getName()))
+    mockMvc.perform(get("/allwines/")
+        .param("wine", winename))
         .andExpect(status().isOk())
+        .andExpect(jsonPath("$.size()").value(wineList.size()))
         .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
         .andDo(print());
-    //   .andExpect(jsonPath("$.price").value(wine.getPrice()))
-    //   .andExpect(jsonPath("$.name").value(wine.getName()));
+//        .andExpect(jsonPath("$.price").value(wine.getPrice()))
+//        .andExpect(jsonPath("$.name").value(wine.getName()));
+    assertEquals(10, wineList.get(0).getPrice());
+    assertEquals("wine", wineList.get(0).getName());
   }
 
   @Test // test does still fail
