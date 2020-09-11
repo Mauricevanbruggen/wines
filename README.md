@@ -1,10 +1,6 @@
-# wines
-Spring with mongoDB 
+# Simple CRUD application with Spring and MongoDb
 
 future updates: 
-use mongodb query classes to create
-  - method filter recommendations > n
-  - method to see prices below < p
-  
-- Dockerize project:  
+-integration test
+-docker
   
