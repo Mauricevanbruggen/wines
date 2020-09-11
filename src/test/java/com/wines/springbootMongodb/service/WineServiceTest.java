@@ -50,12 +50,11 @@ public class WineServiceTest {
     wine1.setId("1");
     wine1.setPrice(1);
 
-    doReturn(Optional.of(wine1)).when(wineRepository).findByName("test wine 1");
+    doReturn(Arrays.asList(wine1)).when(wineRepository).findByWineNameStartingWith("test wine 1");
 
-    Optional<Wine> resultWine = wineService.findWineByName("test wine 1");
+    List<Wine> resultWine = wineService.getAllByWineName("test wine 1");
 
-    assertTrue(resultWine.isPresent(), "Wine not found");
-    assertSame(resultWine.get(), wine1, "returned wine was not the same as the mock");
+    assertEquals("test wine 1" ,resultWine.get(0).getName());
   }
 
   @Test
@@ -74,7 +73,7 @@ public class WineServiceTest {
 
 
   @Test
-  @DisplayName("test add a wine")
+  @DisplayName("test add a wine") //this test fails when running all the test at the same time
   public void testAddWine() {
     Wine wine1 = new Wine();
     wine1.setName("test wine 1");

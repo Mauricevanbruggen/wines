@@ -2,12 +2,9 @@ package com.wines.springbootMongodb.controller;
 
 import com.wines.springbootMongodb.com.service.WineService;
 import com.wines.springbootMongodb.model.Wine;
-import com.wines.springbootMongodb.repository.WineRepository;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,15 +13,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/allwines")
 public class WineController {
 
-  @Autowired
-  private WineRepository wineRepository;
   @Autowired
   private WineService wineService;
 
@@ -33,35 +27,49 @@ public class WineController {
     return wineService.getAllWines();
   }
 
-  @GetMapping("/{id}")
+  @GetMapping("/id/{id}")
   public Optional<Wine> getWineById(@PathVariable String id) {
     return wineService.findWineById(id);
   }
 
-  @GetMapping("/winename") // still returns a 404
-  public Optional<Wine> getWineByName(@RequestParam(name = "winename") String name) {
-    return wineService.findWineByName(name);
+  @GetMapping("/winename")
+  public List<Wine> getAllByName(@RequestParam(required = false, name = "winename") String wineName) {
+    return wineService.getAllByWineName(wineName);
   }
 
-  @PostMapping("/")
+  @GetMapping("/winemakername")
+  public List<Wine> getAllByWinemakerName(
+      @RequestParam(name = "winemakername") String wineMakerName) {
+    return wineService.getAllByWinemakerName(wineMakerName);
+  }
+
+  @GetMapping("/price")
+  public List<Wine> getAllByPrice(@RequestParam(name = "price") int price) {
+    return wineService.getAllByPriceLessThan(price);
+  }
+
+  @PostMapping("/allwines")
   public Wine addWine(@RequestBody Wine wine) {
     return wineService.addWine(wine);
   }
 
-  @PutMapping("/{id}") // does add a new wine instead of updating
+  @PutMapping("/allwines")// note: use a json file with id or else a new wine is inserted
   public Wine updateWine(@RequestBody Wine wine) {
     return wineService.updateWine(wine);
   }
 
   @DeleteMapping("/{id}")
-  public void deleteWine(@PathVariable String id) {
+  public void deleteWine(@PathVariable("id") String id) {
     wineService.delete(id);
   }
 
-  @GetMapping("/page") // doesn't return anything
-  public Map<String, Object> getAllWinesInPage(@RequestParam(name = "pageNo", defaultValue = "0")
-      int pageNo, @RequestParam(name = "pagesize", defaultValue = "2") int pageSize,
-      @RequestParam(name = "sortby", defaultValue = "id") String sortBy) {
-    return wineService.getAllWinesInPage(pageNo, pageSize, sortBy);
+  @GetMapping("/sortdesc")
+  public List<Wine> getAllByReviewDsc() {
+    return wineService.getAllByRatingDsc();
+  }
+
+  @GetMapping("/sortasc")
+  public List<Wine> getAllByReviewAsc() {
+    return wineService.getAllByRatingAsc();
   }
 }

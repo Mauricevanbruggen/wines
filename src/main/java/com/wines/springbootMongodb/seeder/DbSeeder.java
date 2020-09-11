@@ -26,9 +26,9 @@ public class DbSeeder implements CommandLineRunner {
         new Winemaker(
             "Bob", "French", 60),
         Arrays.asList(
-            new Review("Alice", 8, true),
-            new Review("Henk", 6, false),
-            new Review("Dennis", 7, true)
+            new Review("Alice", 5, true),
+            new Review("Henk", 7, false),
+            new Review("Dennis", 6, true)
         ));
 
     Wine sancerre = new Wine(
@@ -48,7 +48,7 @@ public class DbSeeder implements CommandLineRunner {
         new Winemaker(
             "Joanne", "Italian", 26),
         Arrays.asList(
-            new Review("Dennis", 7, true)
+            new Review("Dennis", 10, true)
         ));
 
     Wine ontanon = new Wine(

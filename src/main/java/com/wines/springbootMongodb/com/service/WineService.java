@@ -7,10 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,7 +20,7 @@ public class WineService {
   
   @Autowired
   WineRepository wineRepository;
-  
+
   public List<Wine> getAllWines() {
     return wineRepository.findAll();
   }
@@ -27,8 +29,24 @@ public class WineService {
     return wineRepository.findById(id);
   }
 
-  public Optional<Wine> findWineByName(String wineName) {
-    return wineRepository.findByName(wineName);
+  public List<Wine> getAllByWineName(String winename) {
+    return wineRepository.findByWineNameStartingWith(winename);
+  }
+
+  public List<Wine> getAllByWinemakerName(String wineMakerName) {
+    return wineRepository.findByWineMakerName(wineMakerName);
+  }
+
+  public List<Wine> getAllByPriceLessThan(int price) {
+    return wineRepository.winesLessThan(price);
+  }
+
+  public List<Wine> getAllByRatingDsc() {
+    return wineRepository.findByOrderByAvReviewDesc();
+  }
+
+  public List<Wine> getAllByRatingAsc() {
+    return wineRepository.findByOrderByAvReviewAsc();
   }
 
   public Wine addWine(Wine wine) {
@@ -41,22 +59,5 @@ public class WineService {
 
   public void delete(String id) {
     wineRepository.deleteById(id);
-  }
-
-
-  // this does not work properly
-  public Map<String, Object> getAllWinesInPage(int pageNo, int pageSize, String sortBy) {
-    Map<String, Object> response = new HashMap<>();
-
-    Sort sort = Sort.by(sortBy);
-    Pageable page = PageRequest.of(pageNo, pageSize, sort);
-    Page<Wine> winePage = wineRepository.findAll(page);
-    response.put("data", winePage.getContent());
-    response.put("Total number of page", winePage.getTotalPages());
-    response.put("Total number of Elements", winePage.getNumberOfElements());
-    response.put("data", winePage.getNumber());
-
-    return response;
-
   }
 }
