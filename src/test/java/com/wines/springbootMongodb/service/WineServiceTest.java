@@ -42,20 +42,20 @@ public class WineServiceTest {
     assertEquals(2, allWines.size());
   }
 
-//  @Test
-//  @DisplayName("test find wine by name")
-//  public void testGetWineByName() {
-//    Wine wine1 = new Wine();
-//    wine1.setName("test wine 1");
-//    wine1.setId("1");
-//    wine1.setPrice(1);
-//
-//    doReturn(Arrays.asList(wine1)).when(wineRepository).findbyNameInWineList("test wine 1");
-//
-//    List<Wine> resultWine = wineService.findWineByName("test wine 1");
-//
-//    assertEquals("test wine 1" ,resultWine.get(0).getName());
-//  }
+  @Test
+  @DisplayName("test find wine by name")
+  public void testGetWineByName() {
+    Wine wine1 = new Wine();
+    wine1.setName("test wine 1");
+    wine1.setId("1");
+    wine1.setPrice(1);
+
+    doReturn(Arrays.asList(wine1)).when(wineRepository).findByWineNameStartingWith("test wine 1");
+
+    List<Wine> resultWine = wineService.getAllByWineName("test wine 1");
+
+    assertEquals("test wine 1" ,resultWine.get(0).getName());
+  }
 
   @Test
   @DisplayName("test a find wine by id ")
@@ -73,7 +73,7 @@ public class WineServiceTest {
 
 
   @Test
-  @DisplayName("test add a wine")
+  @DisplayName("test add a wine") //this test fails when running all the test at the same time
   public void testAddWine() {
     Wine wine1 = new Wine();
     wine1.setName("test wine 1");

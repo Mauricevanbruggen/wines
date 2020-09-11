@@ -22,7 +22,7 @@ public class WineController {
   @Autowired
   private WineService wineService;
 
-  @GetMapping("/allwines")
+  @GetMapping("/")
   public List<Wine> getAllWines() {
     return wineService.getAllWines();
   }
