@@ -1,12 +1,11 @@
 package com.wines.springbootMongodb.model;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class WineTest {
   private Wine wine1, wine2, wine3, wine4;
@@ -65,7 +64,7 @@ public class WineTest {
 
   @Test
   void calculateAverageReview() {
-    assertEquals(6, wine2.createAverageReview());
+    assertEquals(7, wine2.createAverageReview());
     assertEquals(0, wine4.createAverageReview());
   }
 
