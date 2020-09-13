@@ -1,20 +1,9 @@
 package com.wines.springbootMongodb.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wines.springbootMongodb.com.service.WineService;
+import com.wines.springbootMongodb.model.Wine;
 import com.wines.springbootMongodb.repository.WineRepository;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,8 +14,18 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import com.wines.springbootMongodb.model.Wine;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @ExtendWith(SpringExtension.class)
@@ -86,19 +85,17 @@ public class WineControllerTest {
     String winename = "wine";
 
     wineList = Arrays.asList(
-        wine
+            wine
     );
 
-      given(wineService.getAllByWineName("wine")).willReturn(wineList);
-      given(wineRepository.save(any(Wine.class))).willReturn(wine);
-    mockMvc.perform(get("/allwines/")
-        .param("wine", winename))
-        .andExpect(status().isOk());
- //       .andExpect(jsonPath("$.size()").value(wineList.size()));
-//        .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
-//        .andDo(print());
-//        .andExpect(jsonPath("$.price").value(wine.getPrice()))
-//        .andExpect(jsonPath("$.name").value(wine.getName()));
+    given(wineService.getAllByWineName("wine")).willReturn(wineList);
+    given(wineRepository.save(any(Wine.class))).willReturn(wine);
+    mockMvc.perform(get("/allwines/winename").param("winename", winename))
+            .andExpect(status().isOk())
+            .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
+            .andExpect(jsonPath("$.size()").value(wineList.size()))
+            .andExpect(jsonPath("$[0].price").value(wine.getPrice()))
+            .andExpect(jsonPath("$[0].name").value(wine.getName()));
     assertEquals(10, wineList.get(0).getPrice());
     assertEquals("wine", wineList.get(0).getName());
   }
@@ -114,11 +111,12 @@ public class WineControllerTest {
         wine
     );
 
+    given(wineService.getAllWines()).willReturn(wineList);
     given(wineRepository.save(any(Wine.class))).willReturn(wine);
     mockMvc.perform(get("/allwines/"))
-        .andExpect(status().isOk())
-//        .andExpect(jsonPath("$.name").value(wine.getName()))
-//        .andExpect(jsonPath("$.price").value(wine.getPrice()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].name").value(wine.getName()))
+            .andExpect(jsonPath("$[0].price").value(wine.getPrice()))
         .andDo(print());
   }
 }
