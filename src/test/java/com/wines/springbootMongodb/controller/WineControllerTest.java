@@ -67,7 +67,7 @@ public class WineControllerTest {
     );
     given(wineService.getAllWines()).willReturn(wineList);
 
-    mockMvc.perform(get("/allwines/"))
+    mockMvc.perform(get("/wines/"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.size()").value(wineList.size()))
         .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
