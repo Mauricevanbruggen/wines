@@ -67,7 +67,7 @@ public class WineControllerTest {
     );
     given(wineService.getAllWines()).willReturn(wineList);
 
-    mockMvc.perform(get("/wines/"))
+    mockMvc.perform(get("/wines"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.size()").value(wineList.size()))
         .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
@@ -82,7 +82,7 @@ public class WineControllerTest {
     Wine wine = new Wine();
     wine.setPrice(10);
     wine.setName("wine");
-    String winename = "wine";
+    String wineName = "wine";
 
     wineList = Arrays.asList(
             wine
@@ -90,7 +90,7 @@ public class WineControllerTest {
 
     given(wineService.getAllByWineName("wine")).willReturn(wineList);
     given(wineRepository.save(any(Wine.class))).willReturn(wine);
-    mockMvc.perform(get("/allwines/winename").param("winename", winename))
+    mockMvc.perform(get("/names").param("name", wineName))
             .andExpect(status().isOk())
             .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
             .andExpect(jsonPath("$.size()").value(wineList.size()))
@@ -113,11 +113,13 @@ public class WineControllerTest {
 
     given(wineService.getAllWines()).willReturn(wineList);
     given(wineRepository.save(any(Wine.class))).willReturn(wine);
-    mockMvc.perform(get("/allwines/"))
+    mockMvc.perform(get("/wines/"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[0].name").value(wine.getName()))
-            .andExpect(jsonPath("$[0].price").value(wine.getPrice()))
-        .andDo(print());
+            .andExpect(jsonPath("$[0].price").value(wine.getPrice()));
+
+    assertEquals(10, wineList.get(0).getPrice());
+    assertEquals("wine", wineList.get(0).getName());
   }
 }
 

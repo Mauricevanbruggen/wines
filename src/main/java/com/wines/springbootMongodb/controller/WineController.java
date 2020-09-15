@@ -27,23 +27,23 @@ public class WineController {
     return wineService.getAllWines();
   }
 
-  @GetMapping("/wines/id/{id}")
+  @GetMapping("/wine/{id}")
   public Optional<Wine> getWineById(@PathVariable String id) {
     return wineService.findWineById(id);
   }
 
-  @GetMapping("/wines/wine/")
-  public List<Wine> getAllByName(@RequestParam(required = false, name = "winename") String wineName) {
+  @GetMapping("names")
+  public List<Wine> getAllByName(@RequestParam(required = false, name = "name") String wineName) {
     return wineService.getAllByWineName(wineName);
   }
 
-  @GetMapping("/wines/winemaker/")
+  @GetMapping("winemakers")
   public List<Wine> getAllByWinemakerName(
       @RequestParam(name = "winemaker") String wineMakerName) {
     return wineService.getAllByWinemakerName(wineMakerName);
   }
 
-  @GetMapping("/wines/price/")
+  @GetMapping("/pricebelow")
   public List<Wine> getAllByPrice(@RequestParam(name = "price") int price) {
     return wineService.getAllByPriceLessThan(price);
   }
