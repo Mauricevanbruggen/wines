@@ -70,8 +70,7 @@ public class WineControllerTest {
     mockMvc.perform(get("/wines"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.size()").value(wineList.size()))
-        .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
-    .andDo(print());
+        .andExpect(MockMvcResultMatchers.content().contentType("application/json"));
 
     assertEquals(wine1.getId(), wineList.get(0).getId());
   }
@@ -96,11 +95,12 @@ public class WineControllerTest {
             .andExpect(jsonPath("$.size()").value(wineList.size()))
             .andExpect(jsonPath("$[0].price").value(wine.getPrice()))
             .andExpect(jsonPath("$[0].name").value(wine.getName()));
+
     assertEquals(10, wineList.get(0).getPrice());
     assertEquals("wine", wineList.get(0).getName());
   }
 
-  @Test // test does still fail
+  @Test
   @DisplayName("create wine should return a wine")
   public void addWine() throws Exception {
     Wine wine = new Wine();
@@ -120,6 +120,22 @@ public class WineControllerTest {
 
     assertEquals(10, wineList.get(0).getPrice());
     assertEquals("wine", wineList.get(0).getName());
+  }
+
+  @Test
+  public void updateWine() throws Exception {
+    Wine wine = new Wine();
+    wine.setId("1");
+    wine.setPrice(8);
+    wine.setName("wine");
+
+    wineList = Arrays.asList(
+        wine
+    );
+
+    given(wineService.getAllWines()).willReturn(wineList);
+    given(wineRepository.save(any(Wine.class))).willReturn(wine);
+
   }
 }
 
